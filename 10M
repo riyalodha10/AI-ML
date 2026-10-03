@@ -1,0 +1,478 @@
+Q.Write a program to implement Breadth First Search (BFS) for the Monkey Banana Problem. 
+
+from collections import deque
+queue = deque(["Monkey at Door"]) 
+visited = set() 
+while queue:     
+    state = queue.popleft()      
+    if state in visited:         
+        continue     
+        visited.add(state)     
+        print(state)      
+        if state == "Monkey at Door":         
+            queue.append("Monkey at Box")     
+        elif state == "Monkey at Box":         
+            queue.append("Box Under Banana")     
+        elif state == "Box Under Banana":         
+            queue.append("Monkey Climbs Box")     
+        elif state == "Monkey Climbs Box":         
+            queue.append("Monkey Gets Banana")  
+        elif state == "Monkey Gets Banana":         
+            print("Goal: Banana Obtained!")
+            break   
+
+
+
+Q2: Write a program to solve the Water Jug Problem using BFS. 
+
+from collections import deque def water_jug(): 
+visited = set()     
+queue = deque([(0, 0)])   
+while queue:       
+x, y = queue.popleft()     
+if (x, y) in visited:         
+continue        
+visited.add((x, y)) 
+if x == 2 or y == 2:     
+print("Solution:", (x, y))      
+return      
+states = [          
+(4, y),  
+(x, 3),  
+(0, y),  
+(x, 0),  
+(max(0, x - (3 - y)), min(3, x + y)),        
+(min(4, x + y), max(0, y - (4 - x)))   
+]    
+for state in states:         
+if state not in visited:            
+queue.append(state) water_jug()  
+
+
+Q3: Write a program to implement BFS traversal for a graph. 
+
+from collections import deque 
+graph = { 
+1: [2, 3],  
+2: [4, 5],    
+3: [6, 7],   
+4: [8, 9], 
+5: [10, 11],    
+6: [12, 13],  
+7: [14, 15],   
+8: [],  
+9: [],   
+10: [],   
+11: [],  
+12: [], 
+13: [],    
+14: [],  
+15: []
+}  
+def bfs(graph, start):    
+visited = set()  
+queue = deque([start])
+visited.add(start)
+ print("BFS Traversal:")  
+ while queue:     
+ node = queue.popleft()    
+ print(node, end=" ")       
+ for neighbour in graph[node]:      
+ if neighbour not in visited:     
+ visited.add(neighbour)           
+ queue.append(neighbour) 
+
+
+
+Q4 : Write a program to solve a state-space search problem using BFS.  
+
+from collections import deque  
+graph = {   
+'A': ['B', 'C'],   
+'B': ['A', 'D'], 
+'C': ['A', 'E'],   
+'D': ['B', 'E'],   
+'E': ['C', 'D'] 
+} 
+def bfs(start):   
+visited = set()  
+queue = deque()     
+queue.append(start)    
+visited.add(start)  
+print("BFS Traversal:")     
+while queue:        
+vertex = queue.popleft()    
+print(vertex, end=" ")          
+for neighbour in graph[vertex]:       
+if neighbour not in visited:      
+visited.add(neighbour)             
+queue.append(neighbour) 
+
+
+
+
+Q5: Write a program implement Iterative Deepening Search (IDS). 
+
+graph = { 
+'A': ['B', 'C'],    
+'B': ['D', 'E'],    
+'C': ['F'],
+'D': [],     
+'E': [], 
+'F': [] 
+}  
+def depth_limited_search(node, depth): 
+print(node, end=" ") 
+if depth == 0:       
+return  
+for child in graph[node]:  
+depth_limited_search(child, depth - 1)  
+def iterative_deepening_search(start, max_depth): 
+for depth in range(max_depth + 1):   
+print("\nDepth", depth, ":", end=" ") 
+depth_limited_search(start, depth)    
+print("Iterative Deepening Search:") 
+iterative_deepening_search(start, max_depth) 
+
+
+
+Q6: Write a program to implement DFS traversal for a graph. 
+
+graph = {   
+'A': ['B', 'C', 'E'],  
+'B': ['A', 'D'],  
+'C': ['A', 'F'],  
+'D': ['B', 'E'],   
+'E': ['A', 'D', 'F'],   
+'F': ['C', 'E'] 
+}  
+visited = set()  
+def dfs(vertex):  
+visited.add(vertex)  
+print(vertex, end=" ")      
+for neighbour in graph[vertex]:      
+if neighbour not in visited:        
+dfs(neighbour)  
+print("DFS Traversal:")
+dfs('A') 
+
+
+
+Q7 : Write a program to solve a state-space search problem using DFS. 
+
+graph = {
+1: [2, 3], 
+2: [1, 4],  
+3: [1, 5],    
+4: [2, 5, 6],   
+5: [3, 4, 6],  
+6: [4, 5] 
+}  
+visited = set() 
+def dfs(vertex):     
+visited.add(vertex)  
+print(vertex, end=" ")     
+for neighbour in graph[vertex]:        
+if neighbour not in visited:      
+dfs(neighbour)  
+print("DFS State-Space Search:") 
+dfs(1)
+
+
+
+
+Q8 : Write a program to implement Depth Limited Search (DLS). 
+
+graph = {   
+1: [2, 3],     
+2: [4, 5],   
+3: [6],  
+4: [],   
+5: [],   
+6: []
+}  
+def dls(node, depth): 
+print(node, end=" ")    
+if depth == 0:       
+return       
+for child in graph[node]:       
+dls(child, depth - 1)   
+start = 1 max_depth = 2  
+print("Depth-Limited Search:")
+dls(start, max_depth) 
+
+
+
+
+Q 9: Write a program to solve the Tower of Hanoi Problem using state-space representation. 
+
+ def tower_of_hanoi(n, source, auxiliary, destination, state):         
+ if n == 0:         
+ return      
+ tower_of_hanoi(n - 1, source, destination, auxiliary, state)      
+ print("Move disk", n, "from", source, "to", destination)      
+ state[n - 1] = destination
+ print("State:", tuple(state))      
+ tower_of_hanoi(n - 1, auxiliary, source, destination, state)  
+ n = 3  
+ state = ['A'] * n 
+ print("Initial State:", tuple(state)) print("\nSteps:") 
+ tower_of_hanoi(n, 'A', 'B', 'C', state) 
+ print("\nGoal State:", tuple(state)) 
+
+
+
+
+
+  Q10 : Write a program to implement the A* Search Algorithm to find the shortest path between a source node and a destination node. 
+
+  graph = {  
+  'A': [('B', 1), ('C', 1)],   
+  'B': [('D', 1), ('E', 1)],   
+  'C': [('F', 1)],     
+  'D': [],  
+  'E': [],  
+  'F': []
+  }  
+  heuristic = {   
+  'A': 2,    
+  'B': 3,   
+  'C': 1,
+  'D': 4,  
+  'E': 4,    
+  'F': 0 
+  }  
+  def a_star(source, destination):    
+  open_list = []   
+  heapq.heappush(open_list, (heuristic[source], 0, source, [source]))    
+  visited = set()     
+  while open_list:    
+  f, g, current, path = heapq.heappop(open_list)        
+  if current in visited:        
+  continue     
+  visited.add(current)          
+  if current == destination:        
+  return path, g          
+  for neighbour, cost in graph[current]:        
+  if neighbour not in visited:             
+  new_g = g + cost           
+  new_f = new_g + heuristic[neighbour] 
+  heapq.heappush( 
+  open_list,   
+  (new_f, new_g, neighbour, path + [neighbour])          
+  )     
+  return None, None  
+  source = 'A' 
+  destination = 'F'
+  path, cost = a_star(source, destination)
+  print("Source Node:", source)
+  print("Destination Node:", destination) 
+  print("Shortest Path:", " -> ".join(path))
+  print("Path Cost:", cost)  
+
+
+
+
+
+
+
+   Q11 : Write the program to implement the AO* Algorithm 
+
+graph = {   
+'A': {  
+'type': 'OR',     
+'children': [('B', 2), ('C', 3)]  
+},  
+'B': {        
+'type': 'AND',     
+'children': [('D', 1), ('E', 4)]   
+}, 
+'C': {  
+'type': 'OR',     
+'children': [('F', 2), ('G', 5)]   
+},   
+'D': {  
+'type': 'OR',   
+'children': [('H', 2), ('I', 3)]     
+},   
+'E': {
+'type': 'OR',      
+'children': [('J', 1)]  
+},   
+'F': {'type': 'GOAL', 'children': []},    
+'G': {'type': 'GOAL', 'children': []},   
+'H': {'type': 'GOAL', 'children': []},  
+'I': {'type': 'GOAL', 'children': []},   
+'J': {'type': 'GOAL', 'children': []} 
+}   def ao_star(node):    
+if graph[node]['type'] == 'GOAL':        
+return 0, [node]     
+children = graph[node]['children']  
+if graph[node]['type'] == 'OR':         
+best_cost = float('inf')     
+best_path = None       
+for child, edge_cost in children:       
+child_cost, child_path = ao_star(child)  
+total_cost = edge_cost + child_cost         
+if total_cost < best_cost:          
+best_cost = total_cost          
+best_path = [node] + child_path     
+return best_cost, best_path    
+elif graph[node]['type'] == 'AND':   
+total_cost = 0     
+path = [node]   
+for child, edge_cost in children: 
+child_cost, child_path = ao_star(child)    
+total_cost += edge_cost + child_cost       
+path += child_path     
+return total_cost, path  
+cost, solution = ao_star('A')
+print("AO* Solution:")
+print(" -> ".join(solution)) 
+print("Total Cost:", cost) 
+
+
+
+
+Q3: Write a program to demonstrate the Hill Climbing Algorithm for finding the maximum value of a simple objective function.
+
+def f(x): 
+return -x**2 + 4*x 
+def hill_climbing(start, step=1):  
+current = start    
+while True:     
+current_value = f(current)          
+left = current - step     
+right = current + step          
+if f(left) > current_value:      
+current = left   
+elif f(right) > current_value:  
+current = right       
+else:
+break   
+return current, f(current)   start = 0  
+x, maximum = hill_climbing(start)
+print("Starting Point:", start)
+print("Maximum value occurs at x =", x) 
+print("Maximum value of F(x) =", maximum)
+
+
+
+
+
+Q4 : Write a program to solve the 4-Puzzle Problem using the A* Search Algorithm. A 4-Puzzle consists of 4 tiles and one blank space arranged in a 2 × 2 grid. 
+
+import heapq  
+start = (1, 0, 3, 2) 
+goal = (1, 2, 3, 0)  
+def heuristic(state):    
+distance = 0     
+for i in range(4):     
+if state[i] == 0:        
+continue         
+row1 = i // 2     
+col1 = i % 2         
+goal_index = goal.index(state[i])  
+row2 = goal_index // 2        
+col2 = goal_index % 2        
+distance += abs(row1 - row2) + abs(col1 - col2)  
+return distance  
+def get_neighbors(state):    
+neighbors = [] 
+blank = state.index(0)   
+row = blank // 2    
+col = blank % 2   
+moves = [       
+(-1, 0),   
+(1, 0),    
+(0, -1),   
+(0, 1)    
+]    
+for dr, dc in moves:   
+new_row = row + dr        
+new_col = col + dc         
+if 0 <= new_row < 2 and 0 <= new_col < 2:  
+new_blank = new_row * 2 + new_col          
+new_state = list(state)          
+new_state[blank], new_state[new_blank] = new_state[new_blank], new_state[blank]       
+neighbors.append(tuple(new_state))  
+return neighbors 
+def a_star(start, goal):      
+queue: (f, g, state, path)  
+open_list = []  
+heapq.heappush( 
+open_list,     
+(heuristic(start), 0, start, [start])    
+)     
+visited = set() 
+while open_list:      
+f, g, current, path = heapq.heappop(open_list)     
+if current in visited:         
+continue   
+visited.add(current)        
+if current == goal:     
+return path       
+for neighbor in get_neighbors(current):  
+if neighbor not in visited:        
+new_g = g + 1       
+new_f = new_g + heuristic(neighbor)        
+heapq.heappush(                
+open_list,           
+(new_f, new_g, neighbor, path + [neighbor])    
+)      
+return None 
+solution = a_star(start, goal) 
+print("Initial State:") 
+print("1 0") print("3 2") 
+print("\nGoal State:") 
+print("1 2") print("3 0") 
+print("\nSolution Path:") 
+for state in solution: 
+print()    
+print(state[0], state[1])
+print(state[2], state[3])  
+
+
+
+Q5 : Write a program to implement the Best First Search Algorithm using heuristic values to find a path from a start node to a goal node.
+
+graph = {
+'A': [('B', 2), ('C', 4)], 
+'B': [('A', 2), ('D', 3), ('E', 5)],
+'C': [('A', 4), ('F', 1)], 
+'D': [('B', 3), ('F', 2)],
+'E': [('B', 5), ('F', 1)], 
+'F': [('C', 1), ('D', 2), ('E', 1)] } 
+heuristic = { 
+'A': 6, 
+'B': 5, 
+'C': 3,  
+'D': 2,  
+'E': 1,     
+'F': 0
+}   
+def best_first_search(start, goal):     
+queue: (heuristic, node, path) 
+open_list = []   
+heapq.heappush(open_list, (heuristic[start], start, [start]))    
+visited = set()      
+while open_list:     
+h, current, path = heapq.heappop(open_list)  
+if current in visited:            
+continue        
+visited.add(current)   
+print("Visiting:", current, "h =", heuristic[current])       
+if current == goal:          
+return path          
+for neighbour, cost in graph[current]:         
+if neighbour not in visited:          
+heapq.heappush(                 
+open_list,              
+(heuristic[neighbour], neighbour, path + [neighbour])  
+)     
+return None 
+start = 'A'
+goal = 'F' 
+path = best_first_search(start, goal)
+print("\nBest First Search Path:")
+print(" -> ".join(path))
