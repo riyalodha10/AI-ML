@@ -1,0 +1,565 @@
+Q1. Game Tree Representation
+
+
+class GameNode:
+    def __init__(self, state, player, value=None):
+        self.state = state
+        self.player = player
+        self.value = value
+        self.children = []
+    def add_child(self, child):
+        self.children.append(child)
+root = GameNode("Start", "Player 1")
+move_a = GameNode("Move A", "Player 2")
+move_b = GameNode("Move B", "Player 2")
+root.add_child(move_a)
+root.add_child(move_b)
+a1 = GameNode("A1", "Player 1", 1)
+a2 = GameNode("A2", "Player 1", -1)
+b1 = GameNode("B1", "Player 1", 0)
+b2 = GameNode("B2", "Player 1", 1)
+move_a.add_child(a1)
+move_a.add_child(a2)
+move_b.add_child(b1)
+move_b.add_child(b2)
+def display_tree(node, level=0):
+    print(" " * level + node.state + " - " + node.player, end="")
+    if node.value is not None:
+        print(" [Utility =", node.value, "]")
+    else:
+        print()
+    for child in node.children:
+        display_tree(child, level + 1)
+print("Game Tree Representation:")
+print("-------------------------")
+display_tree(root)
+
+
+
+
+
+Q2. Alpha-Beta Pruning
+
+
+def alpha_beta(node, depth, alpha, beta, maximizing_player):
+    if isinstance(node, int):
+        return node
+    if maximizing_player:
+        value = float('-inf')
+        for i, child in enumerate(node):
+            value = max(
+                value,
+                alpha_beta(child, depth + 1, alpha, beta, False)
+            )
+            alpha = max(alpha, value)
+            if alpha >= beta:
+                print("Pruned branch at MAX node")
+                break
+        return value
+    else:
+        value = float('inf')
+        for i, child in enumerate(node):
+            value = min(
+                value,
+                alpha_beta(child, depth + 1, alpha, beta, True)
+            )
+            beta = min(beta, value)            
+            if alpha >= beta:
+                print("Pruned branch at MIN node")
+                break
+        return value
+game_tree = [
+    [3, 5], # A
+    [2, 9], # B
+    [0, 7] # C
+]
+best_value = alpha_beta(
+    game_tree,
+    0,
+    float('-inf'),
+    float('inf'),
+    True
+)
+print("\nBest value using Alpha-Beta Pruning:", best_value)
+
+
+
+
+Q3. Tic-Tac-Toe using Minimax
+
+
+board = [' ' for _ in range(9)]
+def display_board():
+    print()
+    print(board[0], "|", board[1], "|", board[2])
+    print("--+---+--")
+    print(board[3], "|", board[4], "|", board[5])
+    print("--+---+--")
+    print(board[6], "|", board[7], "|", board[8])
+    print()
+def check_winner(player):
+    winning_positions = [
+        (0, 1, 2),
+        (3, 4, 5),
+        (6, 7, 8),
+        (0, 3, 6),
+        (1, 4, 7),
+        (2, 5, 8),
+        (0, 4, 8),
+        (2, 4, 6)
+    ]
+    for a, b, c in winning_positions:
+        if board[a] == player and board[b] == player and board[c] == player:
+            return True
+    return False
+def is_draw():
+    return ' ' not in board
+def minimax(is_maximizing):
+
+    # Terminal states
+    if check_winner('O'):
+        return 1
+    if check_winner('X'):
+        return -1
+    if is_draw():
+        return 0
+    if is_maximizing:
+        best_score = -float('inf')
+        for i in range(9):
+            if board[i] == ' ':
+                board[i] = 'O'
+                score = minimax(False)
+                board[i] = ' '
+                best_score = max(best_score, score)
+        return best_score
+    else:
+        best_score = float('inf')
+        for i in range(9):
+            if board[i] == ' ':
+                board[i] = 'X'
+                score = minimax(True)
+                board[i] = ' '
+                best_score = min(best_score, score)
+        return best_score
+def computer_move():
+    best_score = -float('inf')
+    best_move = None
+    for i in range(9):
+        if board[i] == ' ':
+            board[i] = 'O'
+            score = minimax(False)
+            board[i] = ' '
+            if score > best_score:
+                best_score = score
+                best_move = i
+    board[best_move] = 'O'
+print("TIC-TAC-TOE")
+print("You are X")
+print("Computer is O")
+while True:
+    display_board()
+    move = int(input("Enter your move (1-9): ")) - 1
+    if move < 0 or move > 8 or board[move] != ' ':
+        print("Invalid move! Try again.")
+        continue
+    board[move] = 'X'
+    if check_winner('X'):
+        display_board()
+        print("You Win!")
+        break
+
+    if is_draw():
+        display_board()
+        print("Game Draw!")
+        break
+    print("Computer is thinking...")
+    computer_move()
+    if check_winner('O'):
+        display_board()
+        print("Computer Wins!")
+        break
+    if is_draw():
+        display_board()
+        print("Game Draw!")
+        break
+
+
+
+
+Q4. Minimax Algorithm
+
+
+def minimax(node, maximizing_player):
+    if isinstance(node, int):
+        return node
+    if maximizing_player:
+        best_value = float('-inf')
+        for child in node:
+            value = minimax(child, False)
+            best_value = max(best_value, value)
+        return best_value
+    else:
+        best_value = float('inf')
+        for child in node:
+            value = minimax(child, True)
+            best_value = min(best_value, value)
+        return best_value
+game_tree = [
+    [3, 5],
+    [2, 9]
+]
+optimal_value = minimax(game_tree, True)
+print("Game Tree:")
+print(" A (MAX)")
+print(" / \\")
+print(" B (MIN) C (MIN)")
+print(" / \\ / \\")
+print(" 3 5 2 9")
+print("\nMinimax Evaluation:")
+print("B = MIN(3, 5) =", min(3, 5))
+print("C = MIN(2, 9) =", min(2, 9))
+print("A = MAX(3, 2) =", max(3, 2))
+print("\nOptimal value selected by Minimax:", optimal_value)
+
+
+
+Q5. Propositional Logic — AND, OR, NOT
+
+def evaluate_logic(P, Q):
+    print("P =", P)
+    print("Q =", Q)
+    print("P AND Q =", P and Q)
+    print("P OR Q =", P or Q)
+    print("NOT P =", not P)
+    print("NOT Q =", not Q)
+print("Evaluation of Logical Expressions")
+print("----------------------------------")
+P = True
+Q = False
+evaluate_logic(P, Q)
+print("\nTruth Table")
+print("----------------------------------")
+print("P\tQ\tP AND Q\tP OR Q\tNOT P")
+values = [True, False]
+for P in values:
+    for Q in values:
+        print(P, "\t", Q, "\t", P and Q,"\t", P or Q, "\t", not P)
+
+
+
+
+
+Q6. Predicate Logic
+
+
+students = ["Rahul", "Isha", "Atharva"]
+def is_student(name):
+    return name in students
+passed_students = ["Rahul", "Isha", "Atharva"]
+def has_passed(name):
+    return name in passed_students
+x = "Rahul"
+print("Predicate Logic")
+print("----------------")
+print("Is", x, "a student?", is_student(x))
+all_passed = all(has_passed(student) for student in students)
+print("\nUniversal Quantifier (∀):")
+print("All students have passed:", all_passed)
+some_passed = any(has_passed(student) for student in students)
+print("\nExistential Quantifier (∃):")
+print("There exists a student who has passed:", some_passed)
+
+
+Q7. Rule-Based Expert System
+
+
+print("Rule-Based Expert System")
+print("-------------------------")
+temperature = float(input("Enter temperature (°C): "))
+cough = input("Does the person have a cough? (yes/no): ").lower()
+if temperature > 38:
+    fever = True
+else:
+    fever = False
+if fever and cough == "yes":
+    decision = "Flu"
+elif fever:
+    decision = "Fever"
+elif cough == "yes":
+    decision = "Cough"
+else:
+    decision = "No major illness detected"
+print("\n--- Decision ---")
+print("Fever:", fever)
+print("Cough:", cough)
+print("Decision:", decision)
+
+
+
+Q8. Forward Chaining
+
+
+facts = {
+    "temperature": 39,
+    "cough": True
+}
+print("Forward Chaining Inference")
+print("--------------------------")
+print("\nInitial Facts:")
+print("Temperature =", facts["temperature"], "°C")
+print("Cough =", facts["cough"])
+if facts["temperature"] > 38:
+    facts["fever"] = True
+    print("\nRule 1 Fired:")
+    print("Temperature > 38°C")
+    print("Therefore, Fever = True")
+if facts.get("fever") == True and facts.get("cough") == True:
+    facts["flu"] = True
+    print("\nRule 2 Fired:")
+    print("Fever AND Cough")
+    print("Therefore, Flu = True")
+if facts.get("flu") == True:
+    facts["recommendation"] = "Rest and Medication"
+    print("\nRule 3 Fired:")
+    print("Flu = True")
+    print("Therefore, Rest and Medication are recommended")
+print("\nFinal Conclusion:")
+print("-----------------")
+print("Fever:", facts.get("fever"))
+print("Flu:", facts.get("flu"))
+print("Recommendation:", facts.get("recommendation"))
+
+
+
+
+Q9. Backward Chaining
+
+
+facts = {
+    "temperature": 39,
+    "cough": True
+}
+def backward_chaining(goal):
+    if goal == "flu":
+        print("\nGoal: Patient has Flu")
+        print("Checking rule:")
+        print("IF Fever AND Cough THEN Flu")
+        fever = backward_chaining("fever")
+        cough = backward_chaining("cough")
+        if fever and cough:
+            print("Fever and Cough are true.")
+            print("Therefore, Flu is proved.")
+            return True
+        return False
+    elif goal == "fever":
+        print("\nSub-goal: Fever")
+        if facts["temperature"] > 38:
+            print("Temperature =", facts["temperature"], "°C")
+            print("Temperature > 38°C")
+            print("Therefore, Fever is proved.")
+            return True
+        print("Fever cannot be proved.")
+        return False
+    elif goal == "cough":
+        print("\nSub-goal: Cough")
+        if facts["cough"]:
+            print("Cough = True")
+            print("Therefore, Cough is proved.")
+            return True
+        print("Cough cannot be proved.")
+        return False
+    return False
+print("Backward Chaining Inference")
+print("---------------------------")
+goal = "flu"
+result = backward_chaining(goal)
+print("\nFinal Result:")
+if result:
+    print("Goal 'Flu' is PROVED.")
+else:
+    print("Goal 'Flu' cannot be proved.")
+
+
+
+
+Q10. Propositional Logic — AND, OR, IMPLIES
+
+
+P = True
+Q = False
+AND_result = P and Q
+OR_result = P or Q
+IMPLIES_result = (not P) or Q
+print("P =", P)
+print("Q =", Q)
+print("\nLogical Operations:")
+print("P AND Q =", AND_result)
+print("P OR Q =", OR_result)
+print("P IMPLIES Q =", IMPLIES_result)
+
+
+
+Q11. Gaussian Naive Bayes
+
+
+from sklearn.datasets import make_blobs
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score
+X, y = make_blobs(
+    n_samples=200,
+    centers=3,
+    n_features=2,
+    cluster_std=1.5,
+    random_state=42
+)
+model = GaussianNB()
+model.fit(X, y)
+X_test = [
+    [-2, 5],
+    [0, 0],
+    [6, -0.3]
+]
+y_test = [0, 1, 1]
+y_pred = model.predict(X_test)
+print("Predicted Output:", y_pred)
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:", accuracy)
+
+
+
+
+Q12. Euclidean Distance
+
+
+import math
+point1 = list(map(float, input("Enter Data Point 1: ").split()))
+point2 = list(map(float, input("Enter Data Point 2: ").split()))
+sum_squared = 0
+for i in range(len(point1)):
+    sum_squared += (point1[i] - point2[i]) ** 2
+distance = math.sqrt(sum_squared)
+print("\nData Point 1:", point1)
+print("Data Point 2:", point2)
+print("Euclidean Distance =", round(distance, 3))
+
+
+
+Q1:  Write a program to solve the Map Coloring Problem using the Constraint Satisfaction Problem (CSP) approach.               
+
+
+variables = ['A', 'B', 'C', 'D']
+colors = ['Red', 'Green', 'Blue']
+neighbors = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D'],
+    'C': ['A', 'D'],
+    'D': ['B', 'C']
+}
+def is_valid(region, color, a):
+    for neighbour in neighbors[region]:
+        if neighbour in a:
+            if a[neighbour] == color:
+                return False
+    return True
+def solve(a):
+    if len(a) == len(variables):
+        return a
+        
+    for region in variables:
+        if region not in a:
+            for color in colors:
+                if is_valid(region, color, a):
+                    a[region] = color
+                    result = solve(a)
+                    if result:
+                        return result
+                    del a[region]
+            return None
+solution = solve({})
+if solution:
+    print("Map Coloring Solution:")
+    for region in variables:
+        print(region, "->", solution[region])
+else:
+    print("No solution exists")
+
+
+
+
+
+2) CSP-Constraint Satisfaction Problem
+
+
+vertices = [1, 2, 3, 4, 5]
+colors = ['Red', 'Green', 'Blue', 'Yellow', 'Orange']
+graph = {
+    1: [2, 3, 4, 5],
+    2: [1, 3, 4, 5],
+    3: [1, 2, 4, 5],
+    4: [1, 2, 3, 5],
+    5: [1, 2, 3, 4]
+}
+def safe(vertex, color, a):
+    for neighbour in graph[vertex]:
+        if neighbour in a and a[neighbour] == color:
+            return False
+    return True
+def solve(a):
+    if len(a) == len(vertices):
+        return True
+    for vertex in vertices:
+        if vertex not in a:
+            for color in colors:
+                if safe(vertex, color, a):
+                    a[vertex] = color
+                    if solve(a):
+                        return True
+                    del a[vertex]
+            return False
+a = {}
+if solve(a):
+    print("Solution:")
+    for vertex in vertices:
+        print("Vertex", vertex, "->", a[vertex])
+else:
+    print("No solution exists.")
+
+
+
+
+3) N-Queens Problem
+
+class GameNode:
+    def __init__(self, state, player, value=None):
+        self.state = state
+        self.player = player
+        self.value = value
+        self.children = []
+    def add_child(self, child):
+        self.children.append(child)
+root = GameNode("Start", "Player 1")
+a = GameNode("Move A", "Player 2")
+b = GameNode("Move B", "Player 2")
+root.add_child(a)
+root.add_child(b)
+a.add_child(GameNode("A1", "Player 1", 1))
+a.add_child(GameNode("A2", "Player 1", -1))
+b.add_child(GameNode("B1", "Player 1", 0))
+b.add_child(GameNode("B2", "Player 1", 1))
+def display(node, level=0):
+    print("  " * level + node.state + " - " + node.player)
+    if node.value is not None:
+        print("  " * level + "Utility =", node.value)
+    for child in node.children:
+        display(child, level + 1)
+print("Game Tree:")
+display(root)
+
+
+
+    
+
+
+
+
+
